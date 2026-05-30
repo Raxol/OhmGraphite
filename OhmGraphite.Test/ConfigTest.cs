@@ -143,6 +143,45 @@ namespace OhmGraphite.Test
         }
 
         [Fact]
+        public void ExpandsPercentStyleEnvVars()
+        {
+            Environment.SetEnvironmentVariable("OHM_TEST_TOKEN", "secret123");
+            try
+            {
+                Assert.Equal("secret123", OhmGraphite.CustomConfig.Expand("%OHM_TEST_TOKEN%"));
+                Assert.Equal("prefix-secret123-suffix",
+                    OhmGraphite.CustomConfig.Expand("prefix-%OHM_TEST_TOKEN%-suffix"));
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("OHM_TEST_TOKEN", null);
+            }
+        }
+
+        [Theory]
+        [InlineData("dont%change%me")]
+        [InlineData("ci834g%94fn%9cws*one_")]
+        public void UnsetPercentVarStaysLiteral(string happenstanceString)
+        {
+            Assert.Equal(happenstanceString, OhmGraphite.CustomConfig.Expand(happenstanceString));
+        }
+
+        [Fact]
+        public void ExpandHandlesNullAndEmpty()
+        {
+            Assert.Null(OhmGraphite.CustomConfig.Expand(null));
+            Assert.Equal("", OhmGraphite.CustomConfig.Expand(""));
+        }
+
+        [Theory]
+        [InlineData("localhost")]
+        [InlineData("https://example.com:8086/")]
+        public void ExpandLeavesPlainValuesUntouched(string plainValue)
+        {
+            Assert.Equal(plainValue, OhmGraphite.CustomConfig.Expand(plainValue));
+        }
+
+        [Fact]
         public void CanInstallCertificateVerification()
         {
             var current = ServicePointManager.ServerCertificateValidationCallback;

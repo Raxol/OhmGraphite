@@ -56,6 +56,14 @@ App configuration is located in the installation directory at `OhmGraphite.exe.c
 
 Config updates require an app restart to take effect.
 
+Any `value` in the config can reference an environment variable using `%NAME%` so secrets (InfluxDB tokens, Postgres connection strings, etc.) don't have to live in the file:
+
+```xml
+<add key="influx2_token" value="%INFLUX_TOKEN%" />
+```
+
+When running as a Windows service, set the variable machine-wide (e.g. via `setx /M INFLUX_TOKEN ...` or System Properties → Environment Variables) so the service account inherits it; per-user variables won't be visible to `LocalSystem`. Unset references are left as the literal `%NAME%` placeholder (standard Windows behavior).
+
 ### Graphite Configuration
 
 The config below polls our hardware every `5` seconds and sends the results to a graphite server listening on `localhost:2003`.

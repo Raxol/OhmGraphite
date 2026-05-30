@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+using System;
+using System.Configuration;
 
 namespace OhmGraphite
 {
@@ -11,7 +12,10 @@ namespace OhmGraphite
             _config = config;
         }
 
-        public string this[string name] => _config.AppSettings.Settings[name]?.Value;
+        public string this[string name] => Expand(_config.AppSettings.Settings[name]?.Value);
         public string[] GetKeys() => _config.AppSettings.Settings.AllKeys;
+
+        internal static string Expand(string value) =>
+            string.IsNullOrEmpty(value) ? value : Environment.ExpandEnvironmentVariables(value);
     }
 }
