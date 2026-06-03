@@ -1,3 +1,18 @@
+## 0.38.0 - 2026-06-03
+
+- Add environment variable expansion support in configuration
+- LibreHardwareMonitorLib has been updated to latest:
+  - Added support for Intel Panther Lake and Arrow Lake-U CPUs (including a Panther Lake voltage fix).
+  - Corrected temperature offset calculations for newer Zen (Ryzen) processors.
+  - Added motherboard support for MSI B860 (NCT6687D-R) and ASRock B550M Pro4.
+  - Added sensor support for older Intel Framework laptops.
+  - NVIDIA GPUs now recover gracefully when the GPU driver restarts.
+  - NVIDIA GPU load index 3 is now reserved for GPU Memory and the remaining GPU loads have been remapped, so NVIDIA GPU load sensor names/order may change.
+  - Fixed NVMe temperature sensors and improved storage and SMART detection (storage backend upgraded to DiskInfoToolkit 2.x).
+  - Fixed long delays when reporting mechanical (HDD) read/write speeds.
+  - Fixed crashes from an X570 null reference and from an unhandled network interface exception during sensor updates.
+  - Fixed a potential freeze and added support for newer device firmware.
+
 ## 0.37.0 - 2026-03-10
 
 LibreHardareMonitor has been bumped to the latest version:
