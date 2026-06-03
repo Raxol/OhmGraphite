@@ -85,7 +85,7 @@ namespace OhmGraphite
                 SensorAdded(sensor);
             }
 
-            if (hardware is StorageDevice nvme && nvme.Storage.IsNVMe)
+            if (hardware is StorageDevice nvme && nvme.Storage.TransportKind == DiskInfoToolkit.StorageTransportKind.Nvme)
             {
                 var ohmNvme = new OhmNvme(nvme);
                 _nvmes.TryAdd(hardware.Identifier, ohmNvme);

@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using DiskInfoToolkit;
-using DiskInfoToolkit.Interop.Enums;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DiskInfoToolkit.Smart;
 using LibreHardwareMonitor.Hardware;
 using LibreHardwareMonitor.Hardware.Storage;
 
@@ -59,18 +59,18 @@ namespace OhmGraphite
 
         public void Update()
         {
-            var smart = _nvme?.Storage?.Smart;
-            ErrorInfoLogEntryCount.Value = SmartValue(smart, SmartAttributeType.NumberOfErrorInformationLogEntries);
-            MediaErrors.Value = SmartValue(smart, SmartAttributeType.MediaAndDataIntegrityErrors);
-            PowerCycles.Value = SmartValue(smart, SmartAttributeType.PowerCycleCount);
-            UnsafeShutdowns.Value = SmartValue(smart, SmartAttributeType.UnsafeShutdownCount);
+            var attributes = _nvme?.Storage?.SmartAttributes;
+            ErrorInfoLogEntryCount.Value = SmartValue(attributes, SmartTextKeys.NumberOfErrorInformationLogEntries);
+            MediaErrors.Value = SmartValue(attributes, SmartTextKeys.MediaAndDataIntegrityErrors);
+            PowerCycles.Value = SmartValue(attributes, SmartTextKeys.PowerCycleCount);
+            UnsafeShutdowns.Value = SmartValue(attributes, SmartTextKeys.UnsafeShutdownCount);
         }
 
-        private static float? SmartValue(SmartInfo smart, SmartAttributeType type)
+        private static float? SmartValue(IEnumerable<DiskInfoToolkit.SmartAttributeEntry> attributes, string textKey)
         {
-            return smart?.SmartAttributes
-                ?.FirstOrDefault(attribute => attribute.Info.Type == type)
-                ?.Attribute.RawValueULong;
+            return attributes
+                ?.FirstOrDefault(attribute => attribute.TextKey == textKey)
+                ?.RawValue;
         }
     }
 }
